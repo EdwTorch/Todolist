@@ -1,6 +1,7 @@
 #Name : EdwTorch
 #Project : To Do List
 #Description : This Project is used to set up and display
+# Todolist App, this app can see the list, add, remove, and update 
 import time
 listtodo = []
 listtododate = []
