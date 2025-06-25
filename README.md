@@ -1,8 +1,8 @@
 # To Do List App With Dictionary
 This program is used to track and save some to do list task with a built in status that we can edit
 ## Table Of Content
-1. [Key Features].()
-2. [Workflow].()
+1. [Key Features].(https://github.com/EdwTorch/Todolist/tree/main#key-features)
+2. [Workflow].(https://github.com/EdwTorch/Todolist/tree/main#key-features)
 ### Key Features
 1. Add Task
 2. Remove Task
