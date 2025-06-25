@@ -3,10 +3,33 @@
 #Description : This Project is used to set up and display
 # Todolist App, this app can see the list, add, remove, and update 
 import time
+import json
 listtodo = {}
-temporarylisttodo = {}
 counter = 1
+name = 0
+def open_json():
+    global listtodo
+    decision = int(input("Do You Want to Open Another Todolist File? (Write 1 for Yes, 0 for No) : "))
+    if decision == 1:
+        print()
+        inputjson = input("Please write your file json name that you want to access in this folder (ex: June.json (Just write June)): ")
+        try: 
+            with open(f"{inputjson}.json",'r') as fileinput:
+                listtodo = json.load(fileinput)
+                global name 
+                name = inputjson
+                selector()
+        except FileNotFoundError:
+            print(f"the {inputjson}.json doesn't exist ")
+            open_json()
+    elif decision ==0:
+        selector()
+    else:
+        print("Wrong input please try again")
+        open_json()
+        
 def redo(numbers):
+    global listtodo
     decision = int(input("Do you want to do it again? (Write 1 for Yes, 0 for No) : "))
     if decision ==1:
         print()
@@ -30,13 +53,16 @@ def redo(numbers):
         print()
         selector()
 def selector():
+    global listtodo
     print(f"You have {len(listtodo)} to do list")
     print('''What do you want to do
           1. Add_List
           2. Remove_List
           3. See_List
-          4. Update_List
-          5. Close App
+          4. Update_List Name and Date
+          5. Update Task Status 
+          6. Upload_List to JSON
+          7. Close App
           ''')
     selecting = int(input("Please Choose number of action you want to choose : "))
     if selecting == 1:
@@ -53,11 +79,16 @@ def selector():
         update_list()
         redo(4)
     elif selecting ==5:
+        status_update()
+    elif selecting ==6:
+        upload_list()
+    elif selecting ==7:
         exit
     else:
         print("Wrong input please try again")
         selector()
 def rearrange_listforremoval(update):
+    global listtodo
     x = update
     global counter
     while x<counter:
@@ -66,9 +97,19 @@ def rearrange_listforremoval(update):
         
     del listtodo[counter]
         
-
+def upload_list():
+    global name
+    global listtodo
+    if type(name) == str:
+        with open (f"{name}.json","w") as filesave:
+            json.dump(listtodo,filesave,indent=4)
+    else: 
+        name = input("Please write your file json name that you want to upload in this folder (ex: June.json (Just write June)): ")
+        with open (f"{name}.json","w") as filesave:
+            json.dump(listtodo,filesave,indent=4)
 def add_list():
     global counter
+    global listtodo
     print("Please Write your task below")
     listadd = input()
     listtodo[counter] = {}
@@ -76,13 +117,15 @@ def add_list():
     print("Please Write the date and time of your task")
     datelistadd = input()
     listtodo[counter]["Date"]= datelistadd
-    print(f"Your {counter} Task is {listtodo[counter]["Task"]} at {listtodo[counter]["Date"]}")
+    listtodo[counter]["Status"] = "Not Done"
+    print(f"Your {counter} Task is {listtodo[counter]["Task"]} at {listtodo[counter]["Date"]} with Status {listtodo[counter]["Status"]}")
     counter +=1
     print()
     time.sleep(2)
 
 def remove_list():
     global counter
+    global listtodo
     print("These are the list of your task")
     seelist()
     print("Which one do you want to delete ?")
@@ -96,9 +139,10 @@ def remove_list():
     time.sleep(3)
     
 def update_list():
+    global listtodo
     print("These are the list of your task")
     seelist()
-    print("Which one do you want to update ?")
+    print("Which task do you want to update (Name of Task and Time) ?")
     updates = int(input("Please input the number of task : "))
     updatetask = input("Input the new task : ")
     updatetaskdate = input("Input the new task date : ")
@@ -108,12 +152,30 @@ def update_list():
     time.sleep(3)
        
 def seelist():
+    global listtodo
     seelistcounter = 1
     for isian in range (len(listtodo)):
-        print(f"Task {seelistcounter} {listtodo[seelistcounter]["Task"]} at {listtodo[seelistcounter]["Date"]}")
+        print(f"Task {seelistcounter} {listtodo[str(seelistcounter)]["Task"]} at {listtodo[str(seelistcounter)]["Date"]} with Status {listtodo[str(seelistcounter)]["Status"]}")
         seelistcounter += 1
     time.sleep(3)
     print()
 
+def status_update():
+    global listtodo
+    print("These are the list of your task")
+    seelist()
+    print("Which task status do you want to update ?")
+    updates = int(input("Please input the number of task : "))
+    updatetaskstatus = int(input("Input 1 for Done and 0 for Not Done : "))
+    if updatetaskstatus ==1:
+        updatetaskstatus = "Done"
+    elif updatetaskstatus ==0:
+        updatetaskstatus = "Not Done"
+    else:
+        print("Wrong Input please try again")
+        status_update()
+    listtodo[str(updates)]["Status"] = updatetaskstatus
+    seelist()
+    time.sleep(3)
 print(f"Hello, Welcome to To Do List Task")
-selector()
+open_json()
